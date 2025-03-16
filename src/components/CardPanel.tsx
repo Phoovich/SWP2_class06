@@ -66,15 +66,14 @@ export default function CardPanel() {
         />
       </div>
       <div className="w-full text-xl font-medium">
-        Venue List With Ratings {compareList.size}
+        Venue List With Ratings ({compareList.size})
       </div>
       {Array.from(compareList).map(([venueName, rating]) => (
         <div
-          onClick={() =>
-            dispatchCompare({ type: "remove", venueName: venueName })
-          }
           key={venueName}
-          className="w-full text-lg font-medium"
+          data-testid={venueName}
+          className="w-full text-lg font-medium p-2 hover:bg-gray-100 cursor-pointer"
+          onClick={() => dispatchCompare({ type: "remove", venueName })}
         >
           {venueName} : {rating}
         </div>

@@ -6,11 +6,11 @@ export default function ProductCard({
   venueName,
   imgSrc,
   onCompare,
-  rating, // Add rating prop
+  rating,
 }: {
   venueName: string;
   imgSrc: string;
-  onCompare: (venueName: string, rating: number) => void; // Update type
+  onCompare: (venueName: string, rating: number) => void;
   rating: number;
 }) {
   return (
@@ -24,16 +24,19 @@ export default function ProductCard({
         />
       </div>
       <div className="w-full h-[15%] p-[10px]">{venueName}</div>
-      <Rating
-        onClick={(e) => e.stopPropagation()}
-        onChange={(e, newValue) => {
-          e?.stopPropagation();
-          onCompare(venueName, newValue || 0);
-        }}
-        className="mx-2"
-        value={rating}
-        precision={0.5}
-      />
+      <div data-testid={`${venueName} Rating`}>
+        <Rating
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e, newValue) => {
+            e?.stopPropagation();
+            onCompare(venueName, newValue || 0);
+          }}
+          className="mx-2"
+          value={rating}
+          precision={0.5}
+          name={`${venueName} Rating`}
+        />
+      </div>
     </InteractiveCard>
   );
 }
