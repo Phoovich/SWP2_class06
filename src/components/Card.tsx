@@ -6,10 +6,12 @@ export default function ProductCard({
   venueName,
   imgSrc,
   onCompare,
+  rating, // Add rating prop
 }: {
   venueName: string;
   imgSrc: string;
-  onCompare: Function;
+  onCompare: (venueName: string, rating: number) => void; // Update type
+  rating: number;
 }) {
   return (
     <InteractiveCard contentName={venueName}>
@@ -23,12 +25,13 @@ export default function ProductCard({
       </div>
       <div className="w-full h-[15%] p-[10px]">{venueName}</div>
       <Rating
-        onClick={(e) => {
-          e.stopPropagation();
-          onCompare(venueName);
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e, newValue) => {
+          e?.stopPropagation();
+          onCompare(venueName, newValue || 0);
         }}
         className="mx-2"
-        defaultValue={0}
+        value={rating}
         precision={0.5}
       />
     </InteractiveCard>

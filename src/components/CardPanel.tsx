@@ -3,26 +3,36 @@ import { useReducer } from "react";
 import Card from "./Card";
 
 export default function CardPanel() {
-  const compareReducer = (
-    compareList: Set<string>,
-    action: { type: string; venueName: string },
+  const cardReducer = (
+    venueList: Map<string, number>,
+    action: { type: string; venueName: string; rating?: number },
   ) => {
     switch (action.type) {
       case "add":
-        return new Set(compareList).add(action.venueName);
+      case "update":
+        const newVenueList = new Map(venueList);
+        newVenueList.set(action.venueName, action.rating ?? 0);
+        return newVenueList;
       case "remove":
-        const newList = new Set(compareList);
+        const newList = new Map(venueList);
         newList.delete(action.venueName);
         return newList;
       default:
-        return compareList;
+        return venueList;
     }
   };
 
-  const [compareList, dispatchCompare] = useReducer(
-    compareReducer,
-    new Set<string>(),
-  );
+  let defaultVenue = new Map<string, number>([
+    ["The Bloom Pavilion", 0],
+    ["Spark Space", 0],
+    ["The Grand Table", 0],
+  ]);
+
+  const [compareList, dispatchCompare] = useReducer(cardReducer, defaultVenue);
+
+  const handleRatingChange = (venueName: string, rating: number) => {
+    dispatchCompare({ type: "update", venueName, rating });
+  };
 
   return (
     <div>
@@ -39,30 +49,35 @@ export default function CardPanel() {
         <Card
           venueName="The Bloom Pavilion"
           imgSrc="/img/bloom.jpg"
-          onCompare={(room: string) =>
-            dispatchCompare({ type: "add", venueName: room })
-          }
+          onCompare={handleRatingChange}
+          rating={compareList.get("The Bloom Pavilion") || 0}
         />
         <Card
           venueName="Spark Space"
           imgSrc="/img/sparkspace.jpg"
-          onCompare={(room: string) =>
-            dispatchCompare({ type: "add", venueName: room })
-          }
+          onCompare={handleRatingChange}
+          rating={compareList.get("Spark Space") || 0}
         />
         <Card
           venueName="The Grand Table"
           imgSrc="/img/grandtable.jpg"
-          onCompare={(room: string) =>
-            dispatchCompare({ type: "add", venueName: room })
-          }
+          onCompare={handleRatingChange}
+          rating={compareList.get("The Grand Table") || 0}
         />
       </div>
       <div className="w-full text-xl font-medium">
-        venue List With Ratings {compareList.size}
+        Venue List With Ratings {compareList.size}
       </div>
-      {Array.from(compareList).map((venueName) => (
-        <div key={venueName}>{venueName}</div>
+      {Array.from(compareList).map(([venueName, rating]) => (
+        <div
+          onClick={() =>
+            dispatchCompare({ type: "remove", venueName: venueName })
+          }
+          key={venueName}
+          className="w-full text-lg font-medium"
+        >
+          {venueName} : {rating}
+        </div>
       ))}
     </div>
   );
